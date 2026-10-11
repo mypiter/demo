@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>永州市中心医院</title>
+    <style>
+        /* 全局重置与基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+            background-color: #f5f6f8; /* 背景色与页面主体一致，消除黑边 */
+            min-height: 100dvh; /* 使用动态视口高度，适配移动端地址栏伸缩 */
+            width: 100%;
+        }
+
+        /* H5 页面主体容器，高度宽度完全自适应 */
+        .app-container {
+            width: 100%;
+            min-height: 100dvh;
+            background-color: #f5f6f8;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* 防止横向溢出 */
+        }
+
+        /* 顶部模拟手机状态栏 */
+        .mock-status-bar {
+            background-color: #1c1c1e;
+            color: #ffffff;
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 10;
+        }
+        .mock-status-bar .right-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .mock-status-bar .battery {
+            width: 22px;
+            height: 11px;
+            border: 1px solid #fff;
+            border-radius: 2px;
+            position: relative;
+            padding: 1px;
+        }
+        .mock-status-bar .battery::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 3px;
+            width: 2px;
+            height: 4px;
+            background: #fff;
+            border-radius: 0 1px 1px 0;
+        }
+        .mock-status-bar .battery-level {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 1px;
+        }
+
+        /* 页面顶部导航栏（空标签也保留样式，防止结构错乱） */
+        .app-header {
+            background-color: #1c1c1e;
+            color: #ffffff;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 状态横幅 */
+        .status-banner {
+            background-color: #eaf3ff;
+            padding: 18px 20px;
+            border-bottom: 1px solid #d9e6f2;
+        }
+        .status-banner .status-title {
+            color: #2d7af0;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .status-banner .status-desc {
+            color: #333333;
+            font-size: 13.5px;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        /* 通用卡片样式 */
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px 18px;
+            margin: 15px 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        /* 卡片标题 */
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333333;
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background-color: #2d7af0;
+            border-radius: 2px;
+            margin-right: 8px;
+        }
+
+        /* 条形码区域 */
+        .barcode-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .barcode-lines {
+            width: 85%;
+            height: 55px;
+            /* 使用纯CSS绘制条形码，模拟宽窄不一的线条 */
+            background: repeating-linear-gradient(
+                to right,
+                #1a1a1a 0, #1a1a1a 2px, transparent 2px, transparent 4px,
+                #1a1a1a 4px, #1a1a1a 5px, transparent 5px, transparent 8px,
+                #1a1a1a 8px, #1a1a1a 11px, transparent 11px, transparent 13px,
+                #1a1a1a 13px, #1a1a1a 14px, transparent 14px, transparent 17px,
+                #1a1a1a 17px, #1a1a1a 20px, transparent 20px, transparent 22px,
+                #1a1a1a 22px, #1a1a1a 23px, transparent 23px, transparent 26px,
+                #1a1a1a 26px, #1a1a1a 29px, transparent 29px, transparent 31px,
+                #1a1a1a 31px, #1a1a1a 32px, transparent 32px, transparent 35px,
+                #1a1a1a 35px, #1a1a1a 38px, transparent 38px, transparent 40px,
+                #1a1a1a 40px, #1a1a1a 41px, transparent 41px, transparent 45px,
+                #1a1a1a 45px, #1a1a1a 48px, transparent 48px, transparent 50px,
+                #1a1a1a 50px, #1a1a1a 51px, transparent 51px, transparent 54px,
+                #1a1a1a 54px, #1a1a1a 57px, transparent 57px, transparent 59px,
+                #1a1a1a 59px, #1a1a1a 60px, transparent 60px, transparent 63px,
+                #1a1a1a 63px, #1a1a1a 66px, transparent 66px, transparent 68px
+            );
+        }
+        .barcode-number {
+            font-size: 16px;
+            color: #333333;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* 信息列表 */
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .info-row {
+            display: flex;
+            font-size: 14.5px;
+            line-height: 1.4;
+        }
+        .info-label {
+            width: 85px;
+            color: #555555;
+            flex-shrink: 0;
+        }
+        .info-value {
+            flex: 1;
+            color: #1a1a1a;
+            word-break: break-all;
+        }
+        .text-blue { color: #2d7af0; }
+        .text-green { color: #10b981; }
+        .text-orange { color: #f59e0b; }
+        .text-gray { color: #666666; font-size: 13.5px; }
+
+        /* 虚线分割 */
+        .dashed-divider {
+            height: 1px;
+            border-top: 1px dashed #dcdcdc;
+            margin: 18px 0;
+        }
+
+        /* 明细表格 */
+        .detail-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
+        }
+        .grid-header {
+            display: flex;
+            width: 100%;
+            color: #2d7af0;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        .grid-header span, .grid-row span {
+            display: inline-block;
+        }
+        .col-1 { flex: 2.5; }
+        .col-2 { flex: 0.8; text-align: center; }
+        .col-3 { flex: 1.2; text-align: right; }
+        .col-4 { flex: 1.1; text-align: right; }
+
+        .grid-row {
+            display: flex;
+            width: 100%;
+            font-size: 14.5px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .grid-row .col-3 {
+            font-size: 14.5px;
+        }
+        
+        .sub-row {
+            display: flex;
+            width: 100%;
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+        .sub-row .sub-label {
+            width: 75px;
+            flex-shrink: 0;
+        }
+        .sub-row .sub-value {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* 底部黑色导航栏 */
+        .app-footer {
+            background-color: #1c1c1e;
+            color: #ffffff;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            margin-top: auto; /* 推到底部 */
+        }
+        .app-footer .icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- 模拟手机顶部状态栏 -->
+    <div class="mock-status-bar">
+        <div>19:08</div>
+        <div class="right-icons">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 8H3V12H1V8ZM5 5H7V12H5V5ZM9 2H11V12H9V2ZM13 0H15V12H13V0Z" fill="#ffffff"/>
+            </svg>
+            <span>4G</span>
+            <div class="battery"><div class="battery-level"></div></div>
+        </div>
+    </div>
+
+    <!-- 顶部导航栏（如果需要显示文字图标，将下面代码取消注释并替换原标签） -->
+    <!-- <header class="app-header">
+        <div class="icon">✕</div>
+        <div class="header-title">
+            <h1>永州市中心医院</h1>
+            <p>hnsyzszxyy.cn</p>
+        </div>
+        <div class="icon">···</div>
+    </header> -->
+    <header class="app-header"></header>
+
+    <!-- 状态提示横幅 -->
+    <div class="status-banner">
+        <div class="status-title">已缴费</div>
+        <div class="status-desc">
+            已成功缴费，请您携带就诊卡前往药房取药或者到检查/检验/治疗等科室执行项目，如需打印发票，请前往服务台咨询打印。
+        </div>
+    </div>
+
+    <!-- 申请单信息卡片 -->
+    <div class="card">
+        <div class="section-title">申请单信息</div>
+        
+        <div class="barcode-container">
+            <div class="barcode-lines"></div>
+            <div class="barcode-number">0005559475</div>
+        </div>
+
+        <div class="info-list">
+            <div class="info-row">
+                <div class="info-label">患者姓名：</div>
+                <div class="info-value">丁贵玉</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">交易类型：</div>
+                <div class="info-value text-blue">门诊费用</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">发票号：</div>
+                <div class="info-value">000097945256</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">交易金额：</div>
+                <div class="info-value" style="font-weight: 500;">¥ 6946.8</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 明细卡片 -->
+    <div class="card" style="margin-bottom: 0;">
+        <div class="section-title">明细</div>
+        
+        <div class="detail-grid">
+            <!-- 表头 -->
+            <div class="grid-header">
+                <span class="col-1">项目名称</span>
+                <span class="col-2">数量</span>
+                <span class="col-3">金额</span>
+                <span class="col-4">状态</span>
+            </div>
+            
+            <!-- 药品行 -->
+            <div class="grid-row">
+                <span class="col-1">甲磺酸伏美替尼片</span>
+                <span class="col-2">3</span>
+                <span class="col-3">¥6946.8</span>
+                <span class="col-4 text-green">已发药</span>
+            </div>
+            
+            <!-- 执行科室 -->
+            <div class="sub-row">
+                <span class="sub-label">执行科室</span>
+                <span class="sub-value">零陵院区门诊西药房</span>
+            </div>
+            
+            <!-- 取药窗口 -->
+            <div class="sub-row">
+                <span class="sub-label">取药窗口</span>
+                <span class="sub-value text-orange">2号窗口(前面等候0人)</span>
+            </div>
+        </div>
+
+        <!-- 虚线分割 -->
+        <div class="dashed-divider"></div>
+
+        <!-- 交易单号与时间 -->
+        <div class="info-list" style="gap: 10px;">
+            <div class="info-row">
+                <div class="info-label" style="width: 75px; color: #666; font-size: 14px;">交易单号</div>
+                <div class="info-value text-gray" style="line-height: 1.5;">
+                    WMP20260805115917PEKF<br>S6ICX3XBC
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label" style="width: 75px; color: #666; font-size: 14px;">交易时间</div>
+                <div class="info-value text-gray">2026-08-05 11:59:35</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部黑色导航栏（因为去掉了原代码的 home 指示条，如需保留请加回） -->
+    <footer class="app-footer">
+        <div class="icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </div>
+        <div class="icon" style="justify-content: flex-end;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>
